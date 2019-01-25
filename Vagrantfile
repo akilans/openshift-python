@@ -32,6 +32,8 @@ Vagrant.configure("2") do |config|
 
   # Create a private network, which allows host-only access to the machine
   # using a specific IP.
+  config.vm.network "forwarded_port", guest: 8443, host: 6443, host_ip: "127.0.0.1"
+  #config.vm.network "forwarded_port", guest: 80, host: 3000, host_ip: "127.0.0.1"
   config.vm.network "private_network", ip: "192.168.33.10"
 
   # Create a public network, which generally matched to bridged network.
@@ -66,7 +68,7 @@ Vagrant.configure("2") do |config|
    config.vm.provision "shell", inline: <<-SHELL
      yum update
      rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
-     yum install -y yum-utils wget
+     yum install -y yum-utils wget git
      yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7
      yum makecache fast
      yum install -y docker-engine-1.13.1.cs9-1.el7.centos
