@@ -1,6 +1,10 @@
-FROM python:latest
+FROM ubuntu:latest
 
 MAINTAINER Akilan "akilan_s@infosys.com"
+
+RUN apt-get update -y
+
+RUN apt-get install -y python-pip python-dev build-essential
 
 # Copy the requirements file
 COPY ./requirements.txt /app/requirements.txt
@@ -13,8 +17,6 @@ RUN pip install -r requirements.txt
 EXPOSE 8000
 
 COPY . /app
-
-USER root
 
 RUN groupadd -g 9999 appuser && useradd -r -u 9999 -g appuser appuser
 
