@@ -1,4 +1,4 @@
-FROM PYTHON
+FROM python:latest
 
 MAINTAINER Akilan "akilan_s@infosys.com"
 
@@ -10,8 +10,8 @@ WORKDIR /app
 # Install All dependencies 
 RUN pip install -r requirements.txt
 
+EXPOSE 8000
+
 COPY . /app
 
-ENTRYPOINT [ "python" ]
-
-CMD [ "app.py" ]
+CMD ["python", "app.py"]
