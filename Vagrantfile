@@ -65,6 +65,14 @@ Vagrant.configure("2") do |config|
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
      yum update
-     apt-get install -y apache2
+     rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
+     yum install -y yum-utils wget
+     yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7
+     yum makecache fast
+     yum install -y docker-engine-1.13.1.cs9-1.el7.centos
+     systemctl enable docker.service
+     systemctl start docker.service
+     wget https://github.com/openshift/origin/releases/download/v3.11.0/openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz
+     tar -xf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz -C /usr/local/bin/ --strip-components=1
    SHELL
 end
