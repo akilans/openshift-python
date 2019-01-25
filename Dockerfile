@@ -14,10 +14,4 @@ EXPOSE 8000
 
 COPY . /app
 
-USER root
-
-RUN echo appuser:x:999:9999:USER_NAME:/home/users/USER_NAME:/bin/bash >> /etc/passwd
-
-USER appuser
-
-CMD ["python", "app.py"]
+CMD gunicorn --bind 0.0.0.0:8000 wsgi
