@@ -14,6 +14,8 @@ EXPOSE 8000
 
 COPY . /app
 
+USER root
+
 RUN groupadd -g 9999 appuser && useradd -r -u 9999 -g appuser appuser
 
 USER appuser
