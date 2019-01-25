@@ -1,10 +1,6 @@
-FROM ubuntu:latest
+FROM python:latest
 
 MAINTAINER Akilan "akilan_s@infosys.com"
-
-RUN apt-get update -y
-
-RUN apt-get install -y python-pip python-dev build-essential
 
 # Copy the requirements file
 COPY ./requirements.txt /app/requirements.txt
@@ -18,7 +14,9 @@ EXPOSE 8000
 
 COPY . /app
 
-RUN groupadd -g 9999 appuser && useradd -r -u 9999 -g appuser appuser
+USER root
+
+RUN echo appuser:x:999:9999:USER_NAME:/home/users/USER_NAME:/bin/bash >> /etc/passwd
 
 USER appuser
 
