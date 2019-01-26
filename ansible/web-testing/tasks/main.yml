@@ -5,12 +5,12 @@
     url: "{{ web_url }}"
     return_content: yes
   register: this
-  failed_when: "'AKILAN' not in this.content"
+  failed_when: "'Hello World!' not in this.content"
 
-# - name: Execute the command in remote shell; stdout goes to the specified file on the remote.
-#   shell: |
-#     oc login -u system:admin
-#     oc get -o json dc python-web-app >> result.json
+- name: Execute the command in remote shell; stdout goes to the specified file on the remote.
+  shell: |
+    oc login -u system:admin
+    oc get -o json dc python-web-app >> result.json
   
 - name: Execute the command in remote shell; stdout goes to the specified file on the remote.  
   shell: cat result.json
