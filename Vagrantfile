@@ -66,7 +66,7 @@ Vagrant.configure("2") do |config|
   # Puppet, Chef, Ansible, Salt, and Docker are also available. Please see the
   # documentation for more information about their specific syntax and use.
    config.vm.provision "shell", inline: <<-SHELL
-     yum update
+     yum update -y
      rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
      yum install -y yum-utils wget git
      yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7

@@ -1,0 +1,149 @@
+{
+    "apiVersion": "apps.openshift.io/v1",
+    "kind": "DeploymentConfig",
+    "metadata": {
+        "annotations": {
+            "openshift.io/generated-by": "OpenShiftNewApp"
+        },
+        "creationTimestamp": "2019-01-26T05:07:11Z",
+        "generation": 4,
+        "labels": {
+            "app": "python-web-app"
+        },
+        "name": "python-web-app",
+        "namespace": "myproject",
+        "resourceVersion": "5160",
+        "selfLink": "/apis/apps.openshift.io/v1/namespaces/myproject/deploymentconfigs/python-web-app",
+        "uid": "3c9be5c8-2128-11e9-9bbf-06b6b2b5aa58"
+    },
+    "spec": {
+        "replicas": 1,
+        "revisionHistoryLimit": 10,
+        "selector": {
+            "app": "python-web-app",
+            "deploymentconfig": "python-web-app"
+        },
+        "strategy": {
+            "activeDeadlineSeconds": 21600,
+            "resources": {},
+            "rollingParams": {
+                "intervalSeconds": 1,
+                "maxSurge": "25%",
+                "maxUnavailable": "25%",
+                "timeoutSeconds": 600,
+                "updatePeriodSeconds": 1
+            },
+            "type": "Rolling"
+        },
+        "template": {
+            "metadata": {
+                "annotations": {
+                    "openshift.io/generated-by": "OpenShiftNewApp"
+                },
+                "creationTimestamp": null,
+                "labels": {
+                    "app": "python-web-app",
+                    "deploymentconfig": "python-web-app"
+                }
+            },
+            "spec": {
+                "containers": [
+                    {
+                        "env": [
+                            {
+                                "name": "WRITE_FOLDER",
+                                "value": "/mnt"
+                            }
+                        ],
+                        "image": "172.30.1.1:5000/myproject/python-web-app@sha256:194750f575f8c3aec42520a90cf14579a5f242c64530e960acfaeb03864411f7",
+                        "imagePullPolicy": "Always",
+                        "name": "python-web-app",
+                        "ports": [
+                            {
+                                "containerPort": 8000,
+                                "protocol": "TCP"
+                            }
+                        ],
+                        "resources": {},
+                        "terminationMessagePath": "/dev/termination-log",
+                        "terminationMessagePolicy": "File",
+                        "volumeMounts": [
+                            {
+                                "mountPath": "/mnt",
+                                "name": "python-app-volume"
+                            }
+                        ]
+                    }
+                ],
+                "dnsPolicy": "ClusterFirst",
+                "restartPolicy": "Always",
+                "schedulerName": "default-scheduler",
+                "securityContext": {},
+                "terminationGracePeriodSeconds": 30,
+                "volumes": [
+                    {
+                        "name": "python-app-volume",
+                        "persistentVolumeClaim": {
+                            "claimName": "python-app-storage"
+                        }
+                    }
+                ]
+            }
+        },
+        "test": false,
+        "triggers": [
+            {
+                "type": "ConfigChange"
+            },
+            {
+                "imageChangeParams": {
+                    "automatic": true,
+                    "containerNames": [
+                        "python-web-app"
+                    ],
+                    "from": {
+                        "kind": "ImageStreamTag",
+                        "name": "python-web-app:latest",
+                        "namespace": "myproject"
+                    },
+                    "lastTriggeredImage": "172.30.1.1:5000/myproject/python-web-app@sha256:194750f575f8c3aec42520a90cf14579a5f242c64530e960acfaeb03864411f7"
+                },
+                "type": "ImageChange"
+            }
+        ]
+    },
+    "status": {
+        "availableReplicas": 1,
+        "conditions": [
+            {
+                "lastTransitionTime": "2019-01-26T05:08:39Z",
+                "lastUpdateTime": "2019-01-26T05:08:39Z",
+                "message": "Deployment config has minimum availability.",
+                "status": "True",
+                "type": "Available"
+            },
+            {
+                "lastTransitionTime": "2019-01-26T05:10:45Z",
+                "lastUpdateTime": "2019-01-26T05:10:47Z",
+                "message": "replication controller \"python-web-app-3\" successfully rolled out",
+                "reason": "NewReplicationControllerAvailable",
+                "status": "True",
+                "type": "Progressing"
+            }
+        ],
+        "details": {
+            "causes": [
+                {
+                    "type": "ConfigChange"
+                }
+            ],
+            "message": "config change"
+        },
+        "latestVersion": 3,
+        "observedGeneration": 4,
+        "readyReplicas": 1,
+        "replicas": 1,
+        "unavailableReplicas": 0,
+        "updatedReplicas": 1
+    }
+}
