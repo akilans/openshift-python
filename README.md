@@ -33,7 +33,7 @@ The follwing commands used to setup Openshift on CentOS7 using OC client tool. L
 ```bash
 yum update -y
 rpm --import "https://sks-keyservers.net/pks/lookup?op=get&search=0xee6d536cf7dc86e2d7d56f59a178ac6c6238f52e"
-yum install -y yum-utils wget git
+yum install -y yum-utils wget git ansible
 yum-config-manager --add-repo https://packages.docker.com/1.13/yum/repo/main/centos/7
 yum makecache fast
 yum install -y docker-engine-1.13.1.cs9-1.el7.centos
@@ -89,3 +89,31 @@ oc cluster up --public-hostname=$HOSTNAME/$IP
 
 ```
 Now OpenShift will be up and running with https://$HOSTNAME:8443
+
+## Python Flask Web Application Setup, Unittest and Dockerfile
+
+Run the bellow commands to test and run the python web application locally
+
+```bash
+
+pip install -r requirements.txt
+python -m unittest test_flask_app
+python flask_app.py
+
+```
+
+Access the web page by URL http://localhost:8000. If it works successfully then add Dockerfile to containerize this application and push all the source code to private repository.
+
+## Deploy Flask web Application on OpenShift
+
+Add github credentials as secret in openshift and deploy the application using Docker strategy by running the below commands.
+
+```bash
+
+oc login -u system:admin
+oc secret new-basicauth aki-github-cred --username=akilans --prompt
+oc secrets link builder aki-github-cred
+oc new-app https://github.com/akilans/openshift-python.git --strategy docker --name python-web-app --source-secret aki-github-cred
+oc expose service python-web-app
+
+```
