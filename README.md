@@ -117,3 +117,56 @@ oc new-app https://github.com/akilans/openshift-python.git --strategy docker --n
 oc expose service python-web-app
 
 ```
+
+Create a storage in OpenShift and Attach that to python-web-app Deployment on /mnt folder using web console. Add "WRITE_FOLDER" ENV variable to /mnt folder, so that next version of python application writes files into /mnt folder
+
+## Modify Flask web Application to test Persistent Storage
+
+Uncomment the bellow code in flask_app.py file and push it github repo. The below code write hello word with timestamp on /tmp every 10 seconds interval by default of there is no "WRITE_FOLDER" ENV variable.
+
+```python
+
+# Cron Job at 10 seconds interval
+import time
+import atexit
+import os
+
+from apscheduler.schedulers.background import BackgroundScheduler
+
+def print_hello_timestamp(folder):
+    file = open(os.path.join(folder,'hello.txt'), 'a+')
+    file.write(time.strftime("%m/%d/%Y %H:%M:%S ")+ "Hello Word \n")
+    file.close()
+
+
+write_folder = str(os.environ.get("WRITE_FOLDER", "/tmp"))
+scheduler = BackgroundScheduler()
+scheduler.add_job(func=print_hello_timestamp, args=[write_folder], trigger="interval", seconds=10)
+scheduler.start()
+
+# Shut down the scheduler when exiting the app
+atexit.register(lambda: scheduler.shutdown())
+
+```
+
+## ReDeploy the Application to test Persistent Storage
+
+Run the below command to dedeploy the new version of python application. This time it will not ask for git credentials as we already binded the git secrets to build
+
+```bash
+oc start-build python-web-app 
+```
+
+Delete the pod and test whether the data persists or not by logging into container terminal.
+
+```bash
+tail -f /mnt/hello.txt
+```
+
+## Ansible playbook to test the Deployed Application
+
+We already installed Ansible in our first step. Go inside ansible folder and run the playbook to test whether the deployed application is up or not and volume mount details.We can pass web application URL as a parameter.
+
+```bash
+ansible-playbook site.yaml -e web_url=http://python-web-app-myproject.127.0.0.1.nip.io/
+```
