@@ -1,0 +1,3 @@
+---
+# vars file for web-testing
+web_url: "http://localhost:7000"

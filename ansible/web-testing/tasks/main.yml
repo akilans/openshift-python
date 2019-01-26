@@ -1,0 +1,8 @@
+---
+# tasks file for role
+- name: Check that you can connect (GET) to a page and it returns a status 200
+  uri:
+    url: "{{ web_url }}"
+    return_content: yes
+  register: this
+  failed_when: "'AKILAN' not in this.content"
