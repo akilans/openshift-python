@@ -25,3 +25,5 @@
 
 
     * ansible-playbook site.yaml -e web_url=http://localhost:8000
+
+    * ansible-playbook site.yaml -e web_url=http://python-web-app-myproject.127.0.0.1.nip.io/
