@@ -38,7 +38,7 @@ These instructions will get you a OpenShift up and running on your local machine
 
 
 
-This whole setup tested on Centos7
+This solution is setup and tested on Centos7
 
 
 
@@ -54,7 +54,7 @@ Python3
 ### OpenShift Installation
 
 
-The following commands used to set up Openshift on CentOS7 using OC client tool. Login into CentOS7 machine and run the commands as root user. This installs Docker 1.13 and OC 3.11. 
+The following commands will set up Openshift on CentOS7 using OC client tool. Login into the CentOS7 machine and run the commands as root user. This installs Ansible, Docker 1.13 and OC 3.11. 
 
 
 ```bash
@@ -151,26 +151,29 @@ oc cluster up --public-hostname=$HOSTNAME/$IP
 
 ```
 
-Now OpenShift will be up and running with https://$HOSTNAME:8443
+OpenShift is now set up and would be up and running at https://$HOSTNAME:8443
 
 ![OpenShift Web UI](screenshot/1_openshift_web_ui.png?raw=true "OpenShift Web UI")
 
 ## Python Flask Web Application Setup, Unittest and Dockerfile
 
-Run the bellow commands to test and run the python web application locally
+This repository has sample "Hello World" application written in python using Flask framework. Clone this repository and run the below commands to test and run the python web application locally
 
 
 ```bash
 
+#Install all the dependencies
 pip install -r requirements.txt
 
+# Run the unit test
 python -m unittest test_flask_app
 
+# Run the application locally
 python flask_app.py
 
 ```
 
-Access the web page by URL http://localhost:8000. If it works successfully then add Dockerfile to containerize this application and push all the source code to private repository.
+Access the web page by URL http://localhost:8000. 
 
 ## Deploy Flask web Application on OpenShift
 
@@ -192,11 +195,11 @@ oc expose service python-web-app
 
 ```
 
-Create a storage in OpenShift and Attach that to python-web-app Deployment on /mnt folder using web console. Add "WRITE_FOLDER" ENV variable to /mnt folder, so that next version of python application writes files into /mnt folder
+Create a storage in OpenShift and attach that to python-web-app deployment on /mnt folder using web console. Add "WRITE_FOLDER" ENV variable to /mnt folder, so that next version of python application writes files into /mnt folder
 
 ## Modify Flask web Application to test Persistent Storage
 
-Uncomment the bellow code in flask_app.py file and push it github repo. The below code writes "hello word with timestamp" on file called "hello.txt" under /tmp every 10 seconds interval by default if there is no "WRITE_FOLDER" ENV variable.
+Uncomment the below code in flask_app.py file and push it github repo. The below code writes "hello word with timestamp" on file called "hello.txt" under /tmp every 10 seconds interval by default if there is no "WRITE_FOLDER" ENV variable.
 
 ```python
 
@@ -237,10 +240,10 @@ atexit.register(lambda: scheduler.shutdown())
 ```
 
 
-## ReDeploy the Application to test Persistent Storage
+## ReDeploy the application to test Persistent Storage
 
 
-Run the below command to redeploy the new version of python application. This time it will not ask for git credentials as we already binded the git secrets to build
+Run the below command to redeploy the new version of python application. This time it will not ask for git credentials as we already binded the git secrets to the build
 
 
 ```bash
@@ -249,7 +252,9 @@ oc start-build python-web-app
 
 ```
 
-Delete the pod and test whether the data persists or not by logging into container terminal.
+### Testing persistent storage
+
+Delete the pod and test whether the data persists or not by logging into container terminal and run the below command.
 
 ```bash
 
@@ -262,7 +267,7 @@ tail -f /mnt/hello.txt
 ## Ansible playbook to test the Deployed Application
 
 
-We already installed Ansible in our first step. Go inside ansible folder and run the playbook to test whether the deployed application is up or not and volume mount details.We can pass web application URL as a parameter.
+We have already installed ansible in our first step and added ansible playbook under ansible folder. Go inside the ansible folder path and run the playbook to test whether the deployed application is up and the corresponding volume mount details. Web application URL is passed as a parameter.
 
 
 ```bash
