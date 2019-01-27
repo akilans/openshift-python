@@ -48,18 +48,13 @@ CentOS7
 
 Python3
 
-
-
 ```
-
 
 
 ### OpenShift Installation
 
 
-
 The following commands used to set up Openshift on CentOS7 using OC client tool. Login into CentOS7 machine and run the commands as root user. This installs Docker 1.13 and OC 3.11. 
-
 
 
 ```bash
@@ -84,14 +79,9 @@ wget https://github.com/openshift/origin/releases/download/v3.11.0/openshift-ori
 
 tar -xf openshift-origin-client-tools-v3.11.0-0cbc58b-linux-64bit.tar.gz -C /usr/local/bin/ --strip-components=1
 
-
-
 ```
 
-
-
-Manage Docker as a non-root user
-
+#### Manage Docker as a non-root user
 
 
 ```bash
@@ -101,13 +91,10 @@ sudo usermod -aG docker $USER
 ```
 
 
-
-Configure the Docker daemon with an insecure registry parameter of 172.30.0.0/16
-
+#### Configure the Docker daemon with an insecure registry parameter of 172.30.0.0/16
 
 
 edit the /etc/docker/daemon.json file and add the following:
-
 
 
 ```json
@@ -125,9 +112,7 @@ edit the /etc/docker/daemon.json file and add the following:
 ```
 
 
-
 After editing the config, reload systemd and restart the Docker daemon.
-
 
 
 ```bash
@@ -138,10 +123,7 @@ sudo systemctl restart docker
 
 ```
 
-
-
 Run oc cluster up to run OpenShift cluster with public host name or public ip. This will take sometime to download and install Openshift
-
 
 
 ```bash
@@ -153,46 +135,32 @@ oc cluster up --public-hostname=$HOSTNAME/$IP
 #### Important Note
 
 
-
 While running the above command, OpenShift Web UI redirects the console to https://127.0.0.1:8443 by default. This is the known [issue](https://github.com/openshift/origin/issues/20726) of OpenShift.
-
 
 
 To fix the above mentioned issue, run the below command and restart the cluster.
 
 
-
 ```bash
 
-
-
 fgrep -RIl 127.0.0.1:8443 /home/centos/openshift.local.clusterup/ | xargs sed -i 's/127.0.0.1:8443/$HOSTNAME:8443/g'
-
-
 
 oc cluster down
 
 oc cluster up --public-hostname=$HOSTNAME/$IP
 
-
-
 ```
 
 Now OpenShift will be up and running with https://$HOSTNAME:8443
 
-
+![OpenShift Web UI](https://raw.githubusercontent.com/akilans/openshift-python/master/screenshot/1_openshift_web_ui.png)
 
 ## Python Flask Web Application Setup, Unittest and Dockerfile
-
-
 
 Run the bellow commands to test and run the python web application locally
 
 
-
 ```bash
-
-
 
 pip install -r requirements.txt
 
@@ -200,27 +168,17 @@ python -m unittest test_flask_app
 
 python flask_app.py
 
-
-
 ```
-
-
 
 Access the web page by URL http://localhost:8000. If it works successfully then add Dockerfile to containerize this application and push all the source code to private repository.
 
-
-
 ## Deploy Flask web Application on OpenShift
-
 
 
 Add github credentials as secret in openshift and deploy the application using Docker strategy by running the below commands.
 
 
-
 ```bash
-
-
 
 oc login -u system:admin
 
@@ -232,27 +190,15 @@ oc new-app https://github.com/akilans/openshift-python.git --strategy docker --n
 
 oc expose service python-web-app
 
-
-
 ```
-
-
 
 Create a storage in OpenShift and Attach that to python-web-app Deployment on /mnt folder using web console. Add "WRITE_FOLDER" ENV variable to /mnt folder, so that next version of python application writes files into /mnt folder
 
-
-
 ## Modify Flask web Application to test Persistent Storage
-
-
 
 Uncomment the bellow code in flask_app.py file and push it github repo. The below code writes "hello word with timestamp" on file called "hello.txt" under /tmp every 10 seconds interval by default if there is no "WRITE_FOLDER" ENV variable.
 
-
-
 ```python
-
-
 
 # Cron Job at 10 seconds interval
 
@@ -263,9 +209,7 @@ import atexit
 import os
 
 
-
 from apscheduler.schedulers.background import BackgroundScheduler
-
 
 
 def print_hello_timestamp(folder):
@@ -277,9 +221,6 @@ def print_hello_timestamp(folder):
     file.close()
 
 
-
-
-
 write_folder = str(os.environ.get("WRITE_FOLDER", "/tmp"))
 
 scheduler = BackgroundScheduler()
@@ -289,23 +230,17 @@ scheduler.add_job(func=print_hello_timestamp, args=[write_folder], trigger="inte
 scheduler.start()
 
 
-
 # Shut down the scheduler when exiting the app
 
 atexit.register(lambda: scheduler.shutdown())
 
-
-
 ```
-
 
 
 ## ReDeploy the Application to test Persistent Storage
 
 
-
 Run the below command to redeploy the new version of python application. This time it will not ask for git credentials as we already binded the git secrets to build
-
 
 
 ```bash
@@ -314,11 +249,7 @@ oc start-build python-web-app
 
 ```
 
-
-
 Delete the pod and test whether the data persists or not by logging into container terminal.
-
-
 
 ```bash
 
@@ -326,14 +257,10 @@ tail -f /mnt/hello.txt
 
 ```
 
-
-
 ## Ansible playbook to test the Deployed Application
 
 
-
 We already installed Ansible in our first step. Go inside ansible folder and run the playbook to test whether the deployed application is up or not and volume mount details.We can pass web application URL as a parameter.
-
 
 
 ```bash
