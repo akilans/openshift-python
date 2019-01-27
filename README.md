@@ -153,7 +153,7 @@ oc cluster up --public-hostname=$HOSTNAME/$IP
 
 Now OpenShift will be up and running with https://$HOSTNAME:8443
 
-![OpenShift Web UI](openshift-python/screenshot/1_openshift_web_ui.png?raw=true "OpenShift Web UI")
+![OpenShift Web UI](screenshot/1_openshift_web_ui.png?raw=true "OpenShift Web UI")
 
 ## Python Flask Web Application Setup, Unittest and Dockerfile
 
