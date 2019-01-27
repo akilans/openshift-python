@@ -257,6 +257,8 @@ tail -f /mnt/hello.txt
 
 ```
 
+![File storage](screenshot/2_file_data.png?raw=true "File storage")
+
 ## Ansible playbook to test the Deployed Application
 
 
