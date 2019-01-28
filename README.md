@@ -142,7 +142,7 @@ To fix the above mentioned issue, run the below command and restart the cluster.
 
 
 ```bash
-
+# Run as a root user
 fgrep -RIl 127.0.0.1:8443 /home/centos/openshift.local.clusterup/ | xargs sed -i 's/127.0.0.1:8443/$HOSTNAME:8443/g'
 
 oc cluster down
