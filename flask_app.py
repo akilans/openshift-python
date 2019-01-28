@@ -1,6 +1,5 @@
 from flask import Flask
 
-"""
 # Cron Job at 10 seconds interval
 import time
 import atexit
@@ -21,8 +20,6 @@ scheduler.start()
 
 # Shut down the scheduler when exiting the app
 atexit.register(lambda: scheduler.shutdown())
-
-"""
 
 app = Flask(__name__)
 
